@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Find Friends - Social Network{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Find Friends</h2>
+    <form method="GET">
+        <div class="form-group">
+            <input type="text" name="q" placeholder="Search for users..." value="{{ query }}" style="width: 70%; display: inline-block;">
+            <button type="submit" class="btn" style="width: 25%; margin-left: 5%;">Search</button>
+        </div>
+    </form>
+</div>
+
+{% if users %}
+<div class="card">
+    <h3>Search Results</h3>
+    {% for user in users %}
+    <div style="padding: 15px; border-bottom: 1px solid #eee;">
+        <h4>{{ user.username }}</h4>
+        <p>{{ user.full_name or 'No name provided' }}</p>
+        <a href="{{ url_for('profile', user_id=user.id) }}" class="btn">View Profile</a>
+    </div>
+    {% endfor %}
+</div>
+{% elif query %}
+<div class="card">
+    <p>No users found for "{{ query }}"</p>
+</div>
+{% endif %}
+{% endblock %}

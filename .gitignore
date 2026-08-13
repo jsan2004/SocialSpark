@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Local / IDE files
+.local/
+.vscode/
+.idea/
+
+# Replit / internal files
+.replit
+.upm/
+.config/
+
+# Generated uploads
+frontend/static/uploads/
+
+# Archives
+*.tar.gz
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Replit / AI agent files
+.agents/
+
+# Project archive
+social_network_project.tar.gz
+
+# Uploaded user content
+frontend/static/uploads/posts/
+
+# Archives
+*.zip
+*.tar.gz

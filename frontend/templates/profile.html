@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user_profile.username }}'s Profile - Social Network{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>{{ user_profile.username }}'s Profile</h2>
+    <p><strong>Full Name:</strong> {{ user_profile.full_name or 'Not provided' }}</p>
+    <p><strong>Bio:</strong> {{ user_profile.bio or 'No bio available' }}</p>
+    <p><strong>Member since:</strong> {{ user_profile.created_at[:10] }}</p>
+    
+    {% if follow_stats %}
+    <p><strong>Following:</strong> {{ follow_stats.following_count }} | <strong>Followers:</strong> {{ follow_stats.followers_count }}</p>
+    {% endif %}
+    
+    {% if not is_own_profile and follow_status %}
+        {% if follow_status.is_following %}
+            <a href="{{ url_for('unfollow_user', user_id=user_profile.id) }}" class="btn btn-danger">Unfollow</a>
+            {% if follow_status.follows_back %}
+            <span style="margin-left: 10px; color: #666;">Follows you back</span>
+            {% endif %}
+        {% else %}
+            <a href="{{ url_for('follow_user', user_id=user_profile.id) }}" class="btn">Follow</a>
+            {% if follow_status.follows_back %}
+            <span style="margin-left: 10px; color: #666;">Follows you</span>
+            {% endif %}
+        {% endif %}
+    {% elif is_own_profile %}
+        <a href="{{ url_for('edit_profile') }}" class="btn">Edit Profile</a>
+        <a href="{{ url_for('notifications') }}" class="btn">View Notifications</a>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>{{ user_profile.username }}'s Posts</h3>
+    {% if user_posts %}
+        {% for post in user_posts %}
+        <div class="post">
+            <div>{{ post.content }}</div>
+            <div class="post-meta">
+                <span id="like-count-{{ post.id }}">{{ post.likes }} likes</span>
+                {% if session.user_id %}
+                <button id="like-btn-{{ post.id }}" class="like-btn" onclick="likePost('{{ post.id }}')">
+                    {% if session.user_id in post.liked_by %}♥ Unlike{% else %}♡ Like{% endif %}
+                </button>
+                {% endif %}
+                {% if post.user_id == session.user_id %}
+                <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-danger" style="font-size: 0.8em; padding: 2px 8px; margin-left: 10px;">Delete</a>
+                {% endif %}
+                <span style="float: right;">{{ post.created_at[:16] }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

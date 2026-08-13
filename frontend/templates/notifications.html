@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - Social Network{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Notifications</h2>
+    {% if notifications %}
+        {% for notification in notifications %}
+        <div class="notification {% if not notification.read %}unread{% endif %}" style="padding: 15px; border-bottom: 1px solid #eee; {% if not notification.read %}background-color: #f8f9fa;{% endif %}">
+            <div class="notification-content">
+                <strong>{{ notification.message }}</strong>
+            </div>
+            <div class="notification-meta">
+                <small>{{ notification.created_at[:16] }}</small>
+                {% if notification.type == 'follow' and notification.from_user_id %}
+                <a href="{{ url_for('profile', user_id=notification.from_user_id) }}" class="btn" style="font-size: 0.8em; padding: 5px 10px; margin-left: 10px;">View Profile</a>
+                <a href="{{ url_for('follow_user', user_id=notification.from_user_id) }}" class="btn" style="font-size: 0.8em; padding: 5px 10px;">Follow Back</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No notifications yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

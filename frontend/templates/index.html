@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Social Network{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Create a Post</h2>
+    <form method="POST" action="{{ url_for('create_post') }}" enctype="multipart/form-data">
+        <div class="form-group">
+            <textarea name="content" placeholder="What's on your mind?" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="image">Add Image:</label>
+            <input type="file" name="image" accept="image/*">
+        </div>
+        <button type="submit" class="btn">Post</button>
+    </form>
+</div>
+
+
+<div class="card">
+    <h2>Your Feed</h2>
+    {% if posts %}
+        {% for post in posts %}
+        <div class="post">
+            <div class="post-header">{{ post.username }}</div>
+            <div>{{ post.content }}</div>
+            {% if post.image_url %}
+            <div style="margin: 10px 0;">
+                <img src="{{ post.image_url }}" alt="Post image" style="max-width: 100%; height: auto; border-radius: 8px;">
+            </div>
+            {% endif %}
+            <div class="post-meta">
+                <span id="like-count-{{ post.id }}">{{ post.likes }} likes</span>
+                <button id="like-btn-{{ post.id }}" class="like-btn" onclick="likePost('{{ post.id }}')">
+                    {% if session.user_id in post.liked_by %}♥ Unlike{% else %}♡ Like{% endif %}
+                </button>
+                <span>{{ post.comments_count or 0 }} comments</span>
+                {% if post.user_id == session.user_id %}
+                <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-danger" style="font-size: 0.8em; padding: 2px 8px; margin-left: 10px;">Delete</a>
+                {% endif %}
+                <span style="float: right;">{{ post.created_at[:16] }}</span>
+            </div>
+            <div class="comments-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}" style="margin-bottom: 10px;">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" name="content" placeholder="Add a comment..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required>
+                        <button type="submit" class="btn" style="padding: 8px 15px;">Comment</button>
+                    </div>
+                </form>
+                <div id="comments-{{ post.id }}">
+                    <!-- Comments will be loaded here via JavaScript -->
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts to show. Start following friends to see their posts!</p>
+    {% endif %}
+</div>
+{% endblock %}
